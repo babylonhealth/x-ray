@@ -183,6 +183,11 @@ const configItems = [
     key: 'samlAuthContext',
     envVar: 'SAML_AUTH_CONTEXT',
     default: ''
+  },
+  {
+    key: 'allowSamlRegistration',
+    envVar: 'ALLOW_SAML_REGISTRATION',
+    default: false
   }
 ];
 
