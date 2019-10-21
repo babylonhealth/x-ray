@@ -74,6 +74,19 @@ User.findAll = () =>
     .then(docs => docs.map(doc => new User(doc)));
 
 /**
+ * Returns pseudorandomly generated password
+ * @return {String} generatedPassword
+ */
+User.generatePassword = (length = 16) => {
+  const chars =
+    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var password = '';
+  for (var i = 0; i < length; i++)
+    password += chars[Math.round((chars.length - 1) * Math.random())];
+  return password;
+};
+
+/**
  * Returns boolean regarding whether admin registration should be open or not
  * @returns {Promise<boolean>} administrationOpen
  */

@@ -121,21 +121,33 @@ if (samlEntryPoint) {
         identifierFormat: null
       },
       async function(p, done) {
-        const email =
-          p[
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
-          ];
-        const user = await User.findOneByEmail(email);
-        logger.info(`User logged in with SAML as ${email}`);
-        if (!user) {
-          return done(null, false);
+        try {
+          const email =
+            p[
+              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+            ];
+          user = await User.findOneByEmail(email);
+          logger.info(`User logged in with SAML as ${email}`);
+          if (!user) {
+            if (config.get('allowSamlRegistration')) {
+              user = new User({
+                email: email,
+                password: User.generatePassword(),
+                role: 'editor',
+                signupDate: new Date()
+              });
+              user = await user.save();
+            } else return done(null, false);
+          }
+          return done(null, {
+            id: user._id,
+            _id: user._id,
+            role: user.role,
+            email: user.email
+          });
+        } catch (error) {
+          logger.error({ err: error }, `Failed to create user with SAML`);
         }
-        return done(null, {
-          id: user._id,
-          _id: user._id,
-          role: user.role,
-          email: user.email
-        });
       }
     )
   );
