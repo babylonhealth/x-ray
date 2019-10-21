@@ -1,2 +1,6 @@
 #!/bin/sh
+
+cp /var/lib/sqlpad/connections.db.dist /var/lib/sqlpad/connections.db  || true
+chmod 755 /var/lib/sqlpad/connections.db  || true
+
 exec node /usr/app/server.js --dbPath /var/lib/sqlpad --port 3000 $@
